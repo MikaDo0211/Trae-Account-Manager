@@ -65,7 +65,7 @@ export function UsageEvents({ accountId, onError }: UsageEventsProps) {
     return `${year}/${month}/${day} ${hours}:${minutes}`;
   };
 
-  // 加载使用事件
+  // 加载Usage Events
   const loadEvents = async () => {
     if (!accountId) return;
 
@@ -78,7 +78,7 @@ export function UsageEvents({ accountId, onError }: UsageEventsProps) {
       setTotal(response.total || 0);
     } catch (error) {
       console.error('Failed to load usage events:', error);
-      onError?.('加载使用事件失败');
+      onError?.('Failed to load usage events');
       setEvents([]);
       setTotal(0);
     } finally {
@@ -110,7 +110,7 @@ export function UsageEvents({ accountId, onError }: UsageEventsProps) {
   return (
     <div className="usage-events">
       <div className="usage-events-header">
-        <h2>账号使用情况</h2>
+        <h2>Usage</h2>
         <div className="usage-events-filters">
           <div className="time-filter-buttons">
             <button
@@ -151,14 +151,14 @@ export function UsageEvents({ accountId, onError }: UsageEventsProps) {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              placeholder="开始日期"
+              placeholder="Start Date"
             />
             <span>-</span>
             <input
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              placeholder="结束日期"
+              placeholder="End Date"
             />
           </div>
           <button
@@ -168,17 +168,17 @@ export function UsageEvents({ accountId, onError }: UsageEventsProps) {
               setShowDatePicker(false);
             }}
           >
-            应用
+            App
           </button>
         </div>
       )}
 
       <div className="usage-events-table-container">
         {loading ? (
-          <div className="loading-state">加载中...</div>
+          <div className="loading-state">Loading...</div>
         ) : events.length === 0 ? (
           <div className="empty-state">
-            <p>暂无使用记录</p>
+            <p>No usage history</p>
           </div>
         ) : (
           <table className="usage-events-table">
@@ -189,7 +189,7 @@ export function UsageEvents({ accountId, onError }: UsageEventsProps) {
                 <th>Model</th>
                 <th>
                   Bill (USD)
-                  <span className="info-icon" title="费用信息">
+                  <span className="info-icon" title="Cost Info">
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                       <circle cx="7" cy="7" r="6" stroke="currentColor" strokeWidth="1.5"/>
                       <path d="M7 10V7M7 4h.01" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
@@ -222,7 +222,7 @@ export function UsageEvents({ accountId, onError }: UsageEventsProps) {
       </div>
       {total > 0 && (
         <div style={{ marginTop: '12px', fontSize: '14px', color: '#64748b', textAlign: 'right' }}>
-          共 {total} 条记录
+          Total {total} records
         </div>
       )}
     </div>

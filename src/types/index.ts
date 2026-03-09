@@ -1,4 +1,4 @@
-// 账号简要信息
+// Account Brief Info
 export interface AccountBrief {
   id: string;
   name: string;
@@ -8,11 +8,11 @@ export interface AccountBrief {
   is_active: boolean;
   created_at: number;
   machine_id: string | null;
-  is_current: boolean; // 是否是当前 Trae IDE 正在使用的账号
-  token_expired_at: string | null; // Token 过期时间
+  is_current: boolean; // Is Current Account
+  token_expired_at: string | null; // Token Expiration Date
 }
 
-// 完整账号信息
+// Full Account Info
 export interface Account {
   id: string;
   name: string;
@@ -31,7 +31,7 @@ export interface Account {
   machine_id: string | null;
 }
 
-// 使用量汇总
+// Usage Summary
 export interface UsageSummary {
   plan_type: string;
   reset_time: number;
@@ -64,7 +64,7 @@ export interface UsageSummary {
   autocomplete_left: number;
 }
 
-// 使用事件
+// Usage Events
 export interface UsageEvent {
   session_id: string;
   usage_time: number;
@@ -82,13 +82,13 @@ export interface UsageEvent {
   };
 }
 
-// 使用事件响应
+// Usage Events响应
 export interface UsageEventsResponse {
   total: number;
   user_usage_group_by_sessions: UsageEvent[];
 }
 
-// API 错误
+// API Error
 export interface ApiError {
   message: string;
 }

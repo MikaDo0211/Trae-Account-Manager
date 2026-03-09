@@ -7,10 +7,10 @@ interface SidebarProps {
 }
 
 const menuItems = [
-  { id: "dashboard", label: "仪表盘", icon: BarChart3 },
-  { id: "accounts", label: "账号管理", icon: Users },
-  { id: "settings", label: "设置", icon: Settings },
-  { id: "about", label: "关于", icon: Info },
+  { id: "dashboard", label: "Dashboard", icon: BarChart3 },
+  { id: "accounts", label: "Account Management", icon: Users },
+  { id: "settings", label: "Settings", icon: Settings },
+  { id: "about", label: "About", icon: Info },
 ];
 
 export function Sidebar({ currentPage, onNavigate }: SidebarProps) {

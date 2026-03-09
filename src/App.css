@@ -626,7 +626,7 @@ body {
   box-shadow: var(--shadow-xs);
 }
 
-/* Account Grid - 账号卡片网格 */
+/* Account Grid - Account卡片网格 */
 .account-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -666,7 +666,7 @@ body {
   margin-bottom: 8px;
 }
 
-/* Account Card - 账号卡片 */
+/* Account Card - Account卡片 */
 .account-card {
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(10px);
@@ -830,7 +830,7 @@ body {
   color: var(--warning);
 }
 
-/* Card Tags - 标签 */
+/* Card Tags - tab */
 .card-tags {
   display: flex;
   gap: var(--space-sm);
@@ -1114,7 +1114,7 @@ body {
   opacity: 0.7;
 }
 
-/* Context Menu - 右键菜单 */
+/* Context Menu - Context Menu */
 .context-menu-overlay {
   position: fixed;
   inset: 0;
@@ -4129,7 +4129,7 @@ body {
   color: var(--warning);
 }
 
-/* Current Account Badge - 当前使用账号标记 */
+/* Current Account Badge - 当前使用Account标记 */
 .account-card.current {
   border-color: var(--success);
   background: linear-gradient(to bottom, rgba(16, 185, 129, 0.08), var(--bg-secondary));

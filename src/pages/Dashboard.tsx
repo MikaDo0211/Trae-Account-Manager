@@ -19,17 +19,17 @@ export const Dashboard = memo(function Dashboard({ accounts }: DashboardProps) {
   // 合并所有统计计算为一次遍历，提升性能
   const stats = accounts.reduce((acc, a) => {
     if (a.usage) {
-      // 统计活跃账号
+      // 统计活跃Account
       if (a.usage.fast_request_left > 0) {
         acc.activeAccounts++;
       }
 
-      // 累加使用量、配额和剩余量
+      // 累加使用量、Quota和Left量
       acc.totalUsed += a.usage.fast_request_used + a.usage.extra_fast_request_used;
       acc.totalLimit += a.usage.fast_request_limit + a.usage.extra_fast_request_limit;
       acc.totalLeft += a.usage.fast_request_left + a.usage.extra_fast_request_left;
 
-      // 统计套餐分布
+      // 统计Package Distribution
       const planType = a.usage.plan_type || 'Free';
       acc.quotaMap.set(planType, (acc.quotaMap.get(planType) || 0) + 1);
     }
@@ -46,8 +46,8 @@ export const Dashboard = memo(function Dashboard({ accounts }: DashboardProps) {
   const usagePercent = totalLimit > 0 ? Math.round((totalUsed / totalLimit) * 100) : 0;
 
   const pieData = [
-    { name: '已使用', value: totalUsed, color: '#0ea5e9' },
-    { name: '剩余', value: totalLeft, color: '#e5e7eb' },
+    { name: 'Used', value: totalUsed, color: '#0ea5e9' },
+    { name: 'Left', value: totalLeft, color: '#e5e7eb' },
   ];
 
   // 将 Map 转换为数组
@@ -59,17 +59,17 @@ export const Dashboard = memo(function Dashboard({ accounts }: DashboardProps) {
     <div className="dashboard">
       <div className="dashboard-header">
         <div className="welcome-section">
-          <h1>欢迎回来 👋</h1>
-          <p>这是您的账号使用概览</p>
+          <h1>Welcome Back 👋</h1>
+          <p>Here is your account overview</p>
         </div>
         <div className="header-stats">
           <div className="quick-stat">
             <span className="quick-stat-value">{totalAccounts}</span>
-            <span className="quick-stat-label">账号总数</span>
+            <span className="quick-stat-label">Total Accounts</span>
           </div>
           <div className="quick-stat">
             <span className="quick-stat-value success">{activeAccounts}</span>
-            <span className="quick-stat-label">可用账号</span>
+            <span className="quick-stat-label">Active Accounts</span>
           </div>
         </div>
       </div>
@@ -78,7 +78,7 @@ export const Dashboard = memo(function Dashboard({ accounts }: DashboardProps) {
         <div className="stat-card gradient-purple">
           <div className="stat-card-content">
             <div className="stat-card-info">
-              <span className="stat-card-label">总配额</span>
+              <span className="stat-card-label">Total Quota</span>
               <span className="stat-card-value">{totalLimit}</span>
               <span className="stat-card-change">Fast Requests</span>
             </div>
@@ -93,9 +93,9 @@ export const Dashboard = memo(function Dashboard({ accounts }: DashboardProps) {
         <div className="stat-card gradient-blue">
           <div className="stat-card-content">
             <div className="stat-card-info">
-              <span className="stat-card-label">已使用</span>
+              <span className="stat-card-label">Used</span>
               <span className="stat-card-value">{Math.round(totalUsed)}</span>
-              <span className="stat-card-change">{usagePercent}% 使用率</span>
+              <span className="stat-card-change">{usagePercent}% Usage</span>
             </div>
             <div className="stat-card-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -108,9 +108,9 @@ export const Dashboard = memo(function Dashboard({ accounts }: DashboardProps) {
         <div className="stat-card gradient-green">
           <div className="stat-card-content">
             <div className="stat-card-info">
-              <span className="stat-card-label">剩余可用</span>
+              <span className="stat-card-label">Remaining</span>
               <span className="stat-card-value">{Math.round(totalLeft)}</span>
-              <span className="stat-card-change">{100 - usagePercent}% 剩余</span>
+              <span className="stat-card-change">{100 - usagePercent}% Left</span>
             </div>
             <div className="stat-card-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -123,9 +123,9 @@ export const Dashboard = memo(function Dashboard({ accounts }: DashboardProps) {
         <div className="stat-card gradient-orange">
           <div className="stat-card-content">
             <div className="stat-card-info">
-              <span className="stat-card-label">平均使用</span>
+              <span className="stat-card-label">Avg Usage</span>
               <span className="stat-card-value">{totalAccounts > 0 ? Math.round(totalUsed / totalAccounts) : 0}</span>
-              <span className="stat-card-change">每账号</span>
+              <span className="stat-card-change">Per Account</span>
             </div>
             <div className="stat-card-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -140,7 +140,7 @@ export const Dashboard = memo(function Dashboard({ accounts }: DashboardProps) {
       <div className="charts-grid-2col">
         <div className="chart-card">
           <div className="chart-header">
-            <h3>使用量分布</h3>
+            <h3>Usage Distribution</h3>
             <span className="chart-badge">{usagePercent}%</span>
           </div>
           <div className="chart-body pie-chart-container">
@@ -164,24 +164,24 @@ export const Dashboard = memo(function Dashboard({ accounts }: DashboardProps) {
             </ResponsiveContainer>
             <div className="pie-center-text">
               <span className="pie-value">{Math.round(totalLeft)}</span>
-              <span className="pie-label">剩余</span>
+              <span className="pie-label">Left</span>
             </div>
           </div>
           <div className="chart-legend">
             <div className="legend-item">
               <span className="legend-dot" style={{ background: '#0ea5e9' }}></span>
-              <span>已使用 ({Math.round(totalUsed)})</span>
+              <span>Used ({Math.round(totalUsed)})</span>
             </div>
             <div className="legend-item">
               <span className="legend-dot" style={{ background: '#e5e7eb' }}></span>
-              <span>剩余 ({Math.round(totalLeft)})</span>
+              <span>Left ({Math.round(totalLeft)})</span>
             </div>
           </div>
         </div>
 
         <div className="chart-card">
           <div className="chart-header">
-            <h3>套餐分布</h3>
+            <h3>Package Distribution</h3>
           </div>
           <div className="chart-body">
             {quotaData.length > 0 ? (
@@ -203,7 +203,7 @@ export const Dashboard = memo(function Dashboard({ accounts }: DashboardProps) {
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <div className="chart-empty">暂无数据</div>
+              <div className="chart-empty">No Data</div>
             )}
           </div>
         </div>
@@ -215,8 +215,8 @@ export const Dashboard = memo(function Dashboard({ accounts }: DashboardProps) {
 
           <div className="accounts-preview">
             <div className="preview-header">
-              <h3>账号概览</h3>
-              <span className="preview-count">{accounts.length} 个账号</span>
+              <h3>Account Overview</h3>
+              <span className="preview-count">{accounts.length} Accounts</span>
             </div>
             <div className="preview-list">
               {accounts.slice(0, 4).map((account) => {
@@ -256,8 +256,8 @@ export const Dashboard = memo(function Dashboard({ accounts }: DashboardProps) {
       {accounts.length === 0 && (
         <div className="dashboard-empty">
           <div className="empty-icon">📊</div>
-          <h3>暂无账号数据</h3>
-          <p>请先在"账号管理"中添加账号</p>
+          <h3>No account data</h3>
+          <p>Please add accounts in Account Management</p>
         </div>
       )}
     </div>

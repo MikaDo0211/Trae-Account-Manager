@@ -35,12 +35,12 @@ export function AccountListItem({ account, usage, selected, onSelect, onContextM
     const diffTime = Math.abs(now.getTime() - date.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 0) return "今天";
-    if (diffDays === 1) return "昨天";
-    if (diffDays < 7) return `${diffDays}天前`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)}周前`;
-    if (diffDays < 365) return `${Math.floor(diffDays / 30)}个月前`;
-    return `${Math.floor(diffDays / 365)}年前`;
+    if (diffDays === 0) return "Today";
+    if (diffDays === 1) return "Yesterday";
+    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+    if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
+    return `${Math.floor(diffDays / 365)} years ago`;
   };
 
   const getTokenStatus = (): "normal" | "expiring" | "expired" | "unknown" => {
@@ -81,13 +81,13 @@ export function AccountListItem({ account, usage, selected, onSelect, onContextM
 
       <div className="list-item-info">
         <span className="list-item-email">{account.email || account.name}</span>
-        <span className="list-item-id">Trae 账号</span>
+        <span className="list-item-id">Trae Account</span>
       </div>
 
       <div className="list-item-plan">
         <span className="plan-badge">{usage?.plan_type || account.plan_type || "Free"}</span>
         {usage && usage.extra_fast_request_limit > 0 && (
-          <span className="extra-badge">礼包</span>
+          <span className="extra-badge">Package</span>
         )}
       </div>
 
@@ -96,7 +96,7 @@ export function AccountListItem({ account, usage, selected, onSelect, onContextM
           <span className="usage-text">
             <strong>{Math.round(totalUsed)}</strong> / {totalLimit}
           </span>
-          <span className="usage-left">剩余 {Math.round(totalLeft)}</span>
+          <span className="usage-left">Left {Math.round(totalLeft)}</span>
         </div>
         <div className="usage-bar-mini">
           <div
@@ -107,19 +107,19 @@ export function AccountListItem({ account, usage, selected, onSelect, onContextM
       </div>
 
       <div className="list-item-reset">
-        <span className="reset-label">添加时间</span>
+        <span className="reset-label">Added Time</span>
         <span className="reset-date">{formatCreatedDate(account.created_at)}</span>
       </div>
 
       <div className="list-item-status">
         <span className={`status-dot ${tokenStatus === "expired" ? "expired" : tokenStatus === "expiring" ? "expiring" : "normal"}`}></span>
-        <span>{tokenStatus === "expired" ? "过期" : tokenStatus === "expiring" ? "即将过期" : "正常"}</span>
+        <span>{tokenStatus === "expired" ? "Expired" : tokenStatus === "expiring" ? "Expiring" : "Active"}</span>
       </div>
 
       <div className="list-item-actions">
         <button
           className="action-btn"
-          title="更多操作"
+          title="Actions"
           onClick={(e) => {
             e.stopPropagation();
             onContextMenu(e, account.id);

@@ -14,15 +14,15 @@ export function Settings({ onToast }: SettingsProps) {
   const [traePathLoading, setTraePathLoading] = useState(false);
   const [scanning, setScanning] = useState(false);
 
-  // 加载 Trae IDE 机器码
+  // 加载 Trae IDE Machine ID
   const loadTraeMachineId = async () => {
     setTraeRefreshing(true);
     try {
       const id = await api.getTraeMachineId();
       setTraeMachineId(id);
     } catch (err: any) {
-      console.error("获取 Trae IDE 机器码失败:", err);
-      setTraeMachineId("未找到");
+      console.error("Failed to get Machine ID:", err);
+      setTraeMachineId("Not Found");
     } finally {
       setTraeRefreshing(false);
     }
@@ -35,7 +35,7 @@ export function Settings({ onToast }: SettingsProps) {
       const path = await api.getTraePath();
       setTraePath(path);
     } catch (err: any) {
-      console.error("获取 Trae IDE 路径失败:", err);
+      console.error("Failed to get Trae IDE path:", err);
       setTraePath("");
     } finally {
       setTraePathLoading(false);
@@ -47,49 +47,49 @@ export function Settings({ onToast }: SettingsProps) {
     loadTraePath();
   }, []);
 
-  // 复制 Trae IDE 机器码
+  // 复制 Trae IDE Machine ID
   const handleCopyTraeMachineId = async () => {
     try {
       await navigator.clipboard.writeText(traeMachineId);
-      onToast?.("success", "Trae IDE 机器码已复制到剪贴板");
+      onToast?.("success", "Machine ID copied to clipboard");
     } catch {
-      onToast?.("error", "复制失败");
+      onToast?.("error", "Copy failed");
     }
   };
 
   // 清除 Trae IDE 登录状态
   const handleClearTraeLoginState = async () => {
-    if (!confirm("确定要清除 Trae IDE 登录状态吗？\n\n这将：\n• 重置 Trae IDE 机器码\n• 清除所有登录信息\n• 删除本地缓存数据\n\n操作后 Trae IDE 将变成全新安装状态，需要重新登录。\n\n请确保 Trae IDE 已关闭！")) {
+    if (!confirm("Are you sure to clear logic state?\n\nThis will reset Machine ID and delete all login cache.\n\nMake sure Trae IDE is closed!")) {
       return;
     }
 
     setClearingTrae(true);
     try {
       await api.clearTraeLoginState();
-      await loadTraeMachineId(); // 重新加载新的机器码
-      onToast?.("success", "Trae IDE 登录状态已清除，请重新打开 Trae IDE 登录");
+      await loadTraeMachineId(); // Reload Machine ID
+      onToast?.("success", "Login state cleared. Reopen Trae IDE.");
     } catch (err: any) {
-      onToast?.("error", err.message || "清除失败");
+      onToast?.("error", err.message || "Clear failed");
     } finally {
       setClearingTrae(false);
     }
   };
 
-  // 自动扫描 Trae IDE 路径
+  // Auto Scan Trae IDE 路径
   const handleScanTraePath = async () => {
     setScanning(true);
     try {
       const path = await api.scanTraePath();
       setTraePath(path);
-      onToast?.("success", "已找到 Trae IDE: " + path);
+      onToast?.("success", "Found Trae IDE: " + path);
     } catch (err: any) {
-      onToast?.("error", err.message || "未找到 Trae IDE，请手动设置路径");
+      onToast?.("error", err.message || "Trae IDE not found, please set path manually");
     } finally {
       setScanning(false);
     }
   };
 
-  // 手动设置 Trae IDE 路径
+  // Manual Set Trae IDE 路径
   const handleSetTraePath = async () => {
     try {
       const selected = await open({
@@ -98,25 +98,25 @@ export function Settings({ onToast }: SettingsProps) {
           name: "Trae IDE",
           extensions: ["exe"]
         }],
-        title: "选择 Trae.exe 文件"
+        title: "Select Trae.exe"
       });
 
       if (selected) {
         const path = selected as string;
         await api.setTraePath(path);
         setTraePath(path);
-        onToast?.("success", "Trae IDE 路径已保存");
+        onToast?.("success", "Trae IDE Path Saved");
       }
     } catch (err: any) {
-      onToast?.("error", err.message || "选择文件失败");
+      onToast?.("error", err.message || "File selection failed");
     }
   };
 
   return (
     <div className="settings-page">
-      {/* 机器码 */}
+      {/* Machine ID */}
       <div className="settings-section">
-        <h3>机器码</h3>
+        <h3>Machine ID</h3>
         <div className="machine-id-card trae-card">
           <div className="machine-id-header">
             <div className="machine-id-icon trae-icon">
@@ -128,28 +128,28 @@ export function Settings({ onToast }: SettingsProps) {
             </div>
             <div className="machine-id-title">
               <span>MachineId</span>
-              <span className="machine-id-subtitle">客户端唯一标识符</span>
+              <span className="machine-id-subtitle">Client Unique ID</span>
             </div>
           </div>
           <div className="machine-id-value">
-            <code>{traeRefreshing ? "加载中..." : traeMachineId}</code>
+            <code>{traeRefreshing ? "Loading..." : traeMachineId}</code>
           </div>
           <div className="machine-id-actions">
             <button
               className="machine-id-btn"
               onClick={loadTraeMachineId}
               disabled={traeRefreshing}
-              title="刷新"
+              title="Refresh"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
               </svg>
-              刷新
+              Refresh
             </button>
             <button
               className="machine-id-btn"
               onClick={handleCopyTraeMachineId}
-              disabled={!traeMachineId || traeRefreshing || traeMachineId === "未找到"}
+              disabled={!traeMachineId || traeRefreshing || traeMachineId === "Not Found"}
               title="复制"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -162,14 +162,14 @@ export function Settings({ onToast }: SettingsProps) {
               className="machine-id-btn danger"
               onClick={handleClearTraeLoginState}
               disabled={clearingTrae || traeRefreshing}
-              title="清除登录状态"
+              title="Clear Login"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
                 <line x1="10" y1="11" x2="10" y2="17"/>
                 <line x1="14" y1="11" x2="14" y2="17"/>
               </svg>
-              {clearingTrae ? "清除中..." : "清除登录状态"}
+              {clearingTrae ? "Clearing..." : "Clear Login"}
             </button>
           </div>
           <div className="machine-id-tip warning">
@@ -178,14 +178,14 @@ export function Settings({ onToast }: SettingsProps) {
               <line x1="12" y1="9" x2="12" y2="13"/>
               <line x1="12" y1="17" x2="12.01" y2="17"/>
             </svg>
-            <span>清除登录状态会重置机器码并删除所有登录信息，客户端将需要重新登录。请先关闭客户端。</span>
+            <span>Clearing login resets machine ID and deletes all login info. Close client first.</span>
           </div>
         </div>
       </div>
 
-      {/* 路径设置 */}
+      {/* 路径Settings */}
       <div className="settings-section">
-        <h3>客户端路径</h3>
+        <h3>Client Path</h3>
         <div className="machine-id-card trae-card">
           <div className="machine-id-header">
             <div className="machine-id-icon trae-icon">
@@ -194,36 +194,36 @@ export function Settings({ onToast }: SettingsProps) {
               </svg>
             </div>
             <div className="machine-id-title">
-              <span>安装路径</span>
-              <span className="machine-id-subtitle">用于自动打开客户端</span>
+              <span>Install Path</span>
+              <span className="machine-id-subtitle">Used to open client automatically</span>
             </div>
           </div>
           <div className="machine-id-value">
-            <code>{traePathLoading ? "加载中..." : (traePath || "未设置")}</code>
+            <code>{traePathLoading ? "Loading..." : (traePath || "Not Set")}</code>
           </div>
           <div className="machine-id-actions">
             <button
               className="machine-id-btn"
               onClick={handleScanTraePath}
               disabled={scanning}
-              title="自动扫描"
+              title="Auto Scan"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="11" cy="11" r="8"/>
                 <path d="M21 21l-4.35-4.35"/>
               </svg>
-              {scanning ? "扫描中..." : "自动扫描"}
+              {scanning ? "Scanning..." : "Auto Scan"}
             </button>
             <button
               className="machine-id-btn"
               onClick={handleSetTraePath}
-              title="手动设置"
+              title="Manual Set"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
               </svg>
-              手动设置
+              Manual Set
             </button>
           </div>
           <div className="machine-id-tip">
@@ -232,17 +232,17 @@ export function Settings({ onToast }: SettingsProps) {
               <path d="M12 16v-4"/>
               <path d="M12 8h.01"/>
             </svg>
-            <span>切换账号后会自动打开客户端。如果自动扫描找不到，请手动设置 Trae.exe 的完整路径。</span>
+            <span>Automatically opens client after switching. If scan fails, set Trae.exe path manually.</span>
           </div>
         </div>
       </div>
 
       <div className="settings-section">
-        <h3>通用设置</h3>
+        <h3>General Settings</h3>
         <div className="setting-item">
           <div className="setting-info">
-            <div className="setting-label">自动刷新</div>
-            <div className="setting-desc">定时自动刷新账号使用量数据</div>
+            <div className="setting-label">Auto Refresh</div>
+            <div className="setting-desc">Periodically refresh usage data</div>
           </div>
           <label className="toggle">
             <input type="checkbox" />
@@ -252,42 +252,42 @@ export function Settings({ onToast }: SettingsProps) {
 
         <div className="setting-item">
           <div className="setting-info">
-            <div className="setting-label">刷新间隔</div>
-            <div className="setting-desc">自动刷新的时间间隔（分钟）</div>
+            <div className="setting-label">Refresh Interval</div>
+            <div className="setting-desc">Auto refresh interval (minutes)</div>
           </div>
           <select className="setting-select">
-            <option value="5">5 分钟</option>
-            <option value="10">10 分钟</option>
-            <option value="30">30 分钟</option>
-            <option value="60">60 分钟</option>
+            <option value="5">5 Mins</option>
+            <option value="10">10 Mins</option>
+            <option value="30">30 Mins</option>
+            <option value="60">60 Mins</option>
           </select>
         </div>
       </div>
 
       <div className="settings-section">
-        <h3>数据管理</h3>
+        <h3>Data Management</h3>
         <div className="setting-item">
           <div className="setting-info">
-            <div className="setting-label">导出数据</div>
-            <div className="setting-desc">导出所有账号数据为 JSON 文件</div>
+            <div className="setting-label">Export Data</div>
+            <div className="setting-desc">Export all accounts as JSON</div>
           </div>
-          <button className="setting-btn">导出</button>
+          <button className="setting-btn">Export</button>
         </div>
 
         <div className="setting-item">
           <div className="setting-info">
-            <div className="setting-label">导入数据</div>
-            <div className="setting-desc">从 JSON 文件导入账号数据</div>
+            <div className="setting-label">Import Data</div>
+            <div className="setting-desc">Import accounts from JSON</div>
           </div>
-          <button className="setting-btn">导入</button>
+          <button className="setting-btn">Import</button>
         </div>
 
         <div className="setting-item danger">
           <div className="setting-info">
-            <div className="setting-label">清空数据</div>
-            <div className="setting-desc">删除所有账号数据（不可恢复）</div>
+            <div className="setting-label">Clear Data</div>
+            <div className="setting-desc">Delete all data (irreversible)</div>
           </div>
-          <button className="setting-btn danger">清空</button>
+          <button className="setting-btn danger">Clear</button>
         </div>
       </div>
     </div>

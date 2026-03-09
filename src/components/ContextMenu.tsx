@@ -11,7 +11,7 @@ interface ContextMenuProps {
   onSwitchAccount: () => void;
   onClaimGift: () => void;
   onDelete: () => void;
-  isCurrent?: boolean; // 是否是当前使用的账号
+  isCurrent?: boolean; // 是否是当前使用的Account
 }
 
 export function ContextMenu({
@@ -30,7 +30,7 @@ export function ContextMenu({
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // 调整菜单位置，防止超出屏幕
+    // Adjust menu position
     if (menuRef.current) {
       const menu = menuRef.current;
       const rect = menu.getBoundingClientRect();
@@ -54,36 +54,36 @@ export function ContextMenu({
       >
         <div className="context-menu-item" onClick={onViewDetail}>
           <span className="icon">👁</span>
-          查看详情
+          View Details
         </div>
         <div className="context-menu-item" onClick={onRefresh}>
           <span className="icon">🔄</span>
-          刷新数据
+          Refresh数据
         </div>
         <div className="context-menu-item" onClick={onUpdateToken}>
           <span className="icon">🔐</span>
-          更新 Token
+          Update Token
         </div>
         <div className="context-menu-item" onClick={onCopyToken}>
           <span className="icon">🔑</span>
-          复制 Token
+          Copy Token
         </div>
         <div
           className={`context-menu-item ${isCurrent ? "disabled" : ""}`}
           onClick={isCurrent ? undefined : onSwitchAccount}
-          title={isCurrent ? "当前已是此账号" : "切换到此账号"}
+          title={isCurrent ? "Already active" : "Switch Account"}
         >
           <span className="icon">{isCurrent ? "✓" : "🔀"}</span>
-          {isCurrent ? "当前使用中" : "切换账号"}
+          {isCurrent ? "In Use" : "切换Account"}
         </div>
         <div className="context-menu-item" onClick={onClaimGift}>
           <span className="icon">🎁</span>
-          获取礼包
+          获取Package
         </div>
         <div className="context-menu-divider" />
         <div className="context-menu-item danger" onClick={onDelete}>
           <span className="icon">🗑</span>
-          删除账号
+          删除Account
         </div>
       </div>
     </>

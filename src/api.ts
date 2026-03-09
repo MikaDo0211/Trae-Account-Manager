@@ -1,52 +1,52 @@
 import { invoke } from "@tauri-apps/api/core";
 import type { Account, AccountBrief, UsageSummary, UsageEventsResponse } from "./types";
 
-// 添加账号（通过 Cookies）
+// Add Account（通过 Cookies）
 export async function addAccount(cookies: string): Promise<Account> {
   return invoke("add_account", { cookies });
 }
 
-// 添加账号（通过 Token，可选 Cookies）
+// Add Account（通过 Token，可选 Cookies）
 export async function addAccountByToken(token: string, cookies?: string): Promise<Account> {
   return invoke("add_account_by_token", { token, cookies });
 }
 
-// 删除账号
+// 删除Account
 export async function removeAccount(accountId: string): Promise<void> {
   return invoke("remove_account", { accountId });
 }
 
-// 获取所有账号
+// 获取所有Account
 export async function getAccounts(): Promise<AccountBrief[]> {
   return invoke("get_accounts");
 }
 
-// 获取单个账号详情（包含 token）
+// 获取单个Account Details（包含 token）
 export async function getAccount(accountId: string): Promise<Account> {
   return invoke("get_account", { accountId });
 }
 
-// 设置活跃账号
+// Settings活跃Account
 export async function setActiveAccount(accountId: string): Promise<void> {
   return invoke("switch_account", { accountId });
 }
 
-// 切换账号（设置活跃账号并更新机器码）
+// 切换Account（Settings活跃Account并更新Machine ID）
 export async function switchAccount(accountId: string): Promise<void> {
   return invoke("switch_account", { accountId });
 }
 
-// 获取账号使用量
+// 获取Account使用量
 export async function getAccountUsage(accountId: string): Promise<UsageSummary> {
   return invoke("get_account_usage", { accountId });
 }
 
-// 更新账号 Token
+// 更新Account Token
 export async function updateAccountToken(accountId: string, token: string): Promise<UsageSummary> {
   return invoke("update_account_token", { accountId, token });
 }
 
-// 刷新 Token
+// Refresh Token
 export async function refreshToken(accountId: string): Promise<void> {
   return invoke("refresh_token", { accountId });
 }
@@ -56,17 +56,17 @@ export async function updateCookies(accountId: string, cookies: string): Promise
   return invoke("update_cookies", { accountId, cookies });
 }
 
-// 导出账号
+// ExportAccount
 export async function exportAccounts(): Promise<string> {
   return invoke("export_accounts");
 }
 
-// 导入账号
+// ImportAccount
 export async function importAccounts(data: string): Promise<number> {
   return invoke("import_accounts", { data });
 }
 
-// 获取使用事件
+// 获取Usage Events
 export async function getUsageEvents(
   accountId: string,
   startTime: number,
@@ -83,41 +83,41 @@ export async function getUsageEvents(
   });
 }
 
-// 从 Trae IDE 读取当前登录账号
+// 从 Trae IDE 读取当前登录Account
 export async function readTraeAccount(): Promise<Account | null> {
   return invoke("read_trae_account");
 }
 
-// ============ 机器码相关 API ============
+// ============ Machine ID相关 API ============
 
-// 获取当前系统机器码
+// 获取当前系统Machine ID
 export async function getMachineId(): Promise<string> {
   return invoke("get_machine_id");
 }
 
-// 重置系统机器码（生成新的随机机器码）
+// 重置系统Machine ID（生成新的随机Machine ID）
 export async function resetMachineId(): Promise<string> {
   return invoke("reset_machine_id");
 }
 
-// 设置系统机器码为指定值
+// Settings系统Machine ID为指定值
 export async function setMachineId(machineId: string): Promise<void> {
   return invoke("set_machine_id", { machineId });
 }
 
-// 绑定账号机器码（保存当前系统机器码到账号）
+// 绑定AccountMachine ID（保存当前系统Machine ID到Account）
 export async function bindAccountMachineId(accountId: string): Promise<string> {
   return invoke("bind_account_machine_id", { accountId });
 }
 
-// ============ Trae IDE 机器码相关 API ============
+// ============ Trae IDE Machine ID相关 API ============
 
-// 获取 Trae IDE 的机器码
+// 获取 Trae IDE 的Machine ID
 export async function getTraeMachineId(): Promise<string> {
   return invoke("get_trae_machine_id");
 }
 
-// 设置 Trae IDE 的机器码
+// Settings Trae IDE 的Machine ID
 export async function setTraeMachineId(machineId: string): Promise<void> {
   return invoke("set_trae_machine_id", { machineId });
 }
@@ -134,33 +134,33 @@ export async function getTraePath(): Promise<string> {
   return invoke("get_trae_path");
 }
 
-// 设置 Trae IDE 路径
+// Settings Trae IDE 路径
 export async function setTraePath(path: string): Promise<void> {
   return invoke("set_trae_path", { path });
 }
 
-// 自动扫描 Trae IDE 路径
+// Auto Scan Trae IDE 路径
 export async function scanTraePath(): Promise<string> {
   return invoke("scan_trae_path");
 }
 
-// ============ Token 刷新相关 API ============
+// ============ Token Refresh相关 API ============
 
-// 批量刷新所有即将过期的 Token
+// 批量Refresh所有Expiring的 Token
 export async function refreshAllTokens(): Promise<string[]> {
   return invoke("refresh_all_tokens");
 }
 
-// ============ 礼包相关 API ============
+// ============ Package相关 API ============
 
-// 领取礼包
+// 领取Package
 export async function claimGift(accountId: string): Promise<void> {
   return invoke("claim_gift", { accountId });
 }
 
 // ============ 浏览器登录 ============
 
-// 打开浏览器登录窗口
+// Open浏览器登录窗口
 export async function startBrowserLogin(): Promise<void> {
   return invoke("start_browser_login");
 }

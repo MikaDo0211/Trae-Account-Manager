@@ -36,7 +36,7 @@ export function DetailModal({ isOpen, onClose, account, usage }: DetailModalProp
       setCopiedField(fieldName);
       setTimeout(() => setCopiedField(null), 2000);
     } catch (err) {
-      console.error("复制失败:", err);
+      console.error("Copy Failed:", err);
     }
   };
 
@@ -44,7 +44,7 @@ export function DetailModal({ isOpen, onClose, account, usage }: DetailModalProp
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content detail-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header-fixed">
-          <h2>账号详情</h2>
+          <h2>Account Details</h2>
           <button className="modal-close-btn" onClick={onClose}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
               <line x1="18" y1="6" x2="6" y2="18"/>
@@ -55,21 +55,21 @@ export function DetailModal({ isOpen, onClose, account, usage }: DetailModalProp
 
         <div className="modal-body-scrollable">
           <div className="detail-section">
-            <h3>基本信息</h3>
+            <h3>Basic Info</h3>
             <div className="detail-row">
-              <span className="detail-label">用户名</span>
+              <span className="detail-label">Username</span>
               <span className="detail-value">{account.name}</span>
             </div>
             <div className="detail-row">
-              <span className="detail-label">邮箱</span>
+              <span className="detail-label">Email</span>
               <span className="detail-value">{account.email || "-"}</span>
             </div>
             <div className="detail-row">
-              <span className="detail-label">套餐类型</span>
+              <span className="detail-label">Plan Type</span>
               <span className="detail-value">{usage?.plan_type || account.plan_type || "Free"}</span>
             </div>
             <div className="detail-row">
-              <span className="detail-label">重置时间</span>
+              <span className="detail-label">Reset Time</span>
               <span className="detail-value">{usage ? formatDate(usage.reset_time) : "-"}</span>
             </div>
           </div>
@@ -83,7 +83,7 @@ export function DetailModal({ isOpen, onClose, account, usage }: DetailModalProp
                 <button
                   className="copy-btn-icon"
                   onClick={() => handleCopy(account.jwt_token!, "token")}
-                  title="复制 Token"
+                  title="Copy Token"
                 >
                   {copiedField === "token" ? (
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
@@ -109,7 +109,7 @@ export function DetailModal({ isOpen, onClose, account, usage }: DetailModalProp
                 <button
                   className="copy-btn-icon"
                   onClick={() => handleCopy(account.cookies!, "cookies")}
-                  title="复制 Cookies"
+                  title="Copy Cookies"
                 >
                   {copiedField === "cookies" ? (
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
@@ -131,43 +131,43 @@ export function DetailModal({ isOpen, onClose, account, usage }: DetailModalProp
               <div className="detail-section">
                 <h3>Fast Request</h3>
                 <div className="detail-row">
-                  <span className="detail-label">已使用</span>
+                  <span className="detail-label">Used</span>
                   <span className="detail-value">{formatNumber(usage.fast_request_used)}</span>
                 </div>
                 <div className="detail-row">
-                  <span className="detail-label">总配额</span>
+                  <span className="detail-label">Total Quota</span>
                   <span className="detail-value">{formatNumber(usage.fast_request_limit)}</span>
                 </div>
                 <div className="detail-row">
-                  <span className="detail-label">剩余</span>
+                  <span className="detail-label">Left</span>
                   <span className="detail-value success">{formatNumber(usage.fast_request_left)}</span>
                 </div>
               </div>
 
               {usage.extra_fast_request_limit > 0 && (
                 <div className="detail-section">
-                  <h3>额外礼包 {usage.extra_package_name && `(${usage.extra_package_name})`}</h3>
+                  <h3>Extra Package {usage.extra_package_name && `(${usage.extra_package_name})`}</h3>
                   <div className="detail-row">
-                    <span className="detail-label">已使用</span>
+                    <span className="detail-label">Used</span>
                     <span className="detail-value">{formatNumber(usage.extra_fast_request_used)}</span>
                   </div>
                   <div className="detail-row">
-                    <span className="detail-label">总配额</span>
+                    <span className="detail-label">Total Quota</span>
                     <span className="detail-value">{formatNumber(usage.extra_fast_request_limit)}</span>
                   </div>
                   <div className="detail-row">
-                    <span className="detail-label">剩余</span>
+                    <span className="detail-label">Left</span>
                     <span className="detail-value success">{formatNumber(usage.extra_fast_request_left)}</span>
                   </div>
                   <div className="detail-row">
-                    <span className="detail-label">过期时间</span>
+                    <span className="detail-label">Expiration Date</span>
                     <span className="detail-value">{formatDate(usage.extra_expire_time)}</span>
                   </div>
                 </div>
               )}
 
               <div className="detail-section">
-                <h3>其他配额</h3>
+                <h3>Other Quotas</h3>
                 <div className="detail-row">
                   <span className="detail-label">Slow Request</span>
                   <span className="detail-value">
@@ -192,7 +192,7 @@ export function DetailModal({ isOpen, onClose, account, usage }: DetailModalProp
         </div>
 
         <div className="modal-actions-fixed">
-          <button onClick={onClose}>关闭</button>
+          <button onClick={onClose}>Close</button>
         </div>
       </div>
     </div>

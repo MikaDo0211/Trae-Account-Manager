@@ -35,7 +35,7 @@ function App() {
   // 使用自定义 Toast hook
   const { toasts, addToast, removeToast } = useToast();
 
-  // 确认弹窗状态
+  // Confirm弹窗状态
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
     title: string;
@@ -44,20 +44,20 @@ function App() {
     onConfirm: () => void;
   } | null>(null);
 
-  // 右键菜单状态
+  // Context Menu状态
   const [contextMenu, setContextMenu] = useState<{
     x: number;
     y: number;
     accountId: string;
   } | null>(null);
 
-  // 详情弹窗状态
+  // Detail Modal State
   const [detailAccount, setDetailAccount] = useState<AccountWithUsage | null>(null);
 
-  // 刷新中的账号 ID
+  // Refreshing Account ID
   const [refreshingIds, setRefreshingIds] = useState<Set<string>>(new Set());
 
-  // 更新 Token 弹窗状态
+  // Update Token 弹窗状态
   const [updateTokenModal, setUpdateTokenModal] = useState<{
     accountId: string;
     accountName: string;
@@ -77,13 +77,13 @@ function App() {
     onConfirm: () => void;
   } | null>(null);
 
-  // 加载账号列表（先显示列表，再后台加载使用量）
+  // Load Account List
   const loadAccounts = useCallback(async () => {
     setLoading(true);
     try {
       const list = await api.getAccounts();
 
-      // 先立即显示账号列表（不等待使用量加载）
+      // Display accounts immediately
       setAccounts(list.map((account) => ({ ...account, usage: undefined })));
       setLoading(false);
 
@@ -104,7 +104,7 @@ function App() {
         );
       }
     } catch (err: any) {
-      setError(err.message || "加载账号失败");
+      setError(err.message || "加载Account失败");
       setLoading(false);
     }
   }, []);
@@ -114,21 +114,21 @@ function App() {
     loadAccounts();
   }, [loadAccounts]);
 
-  // 自动刷新即将过期的 Token
+  // Auto RefreshExpiring的 Token
   useEffect(() => {
-    // 启动时刷新
+    // 启动时Refresh
     api.refreshAllTokens().then((refreshed) => {
       if (refreshed.length > 0) {
-        console.log(`[INFO] 启动时自动刷新了 ${refreshed.length} 个 Token`);
+        console.log(`[INFO] 启动时Auto Refresh了 ${refreshed.length} 个 Token`);
         loadAccounts();
       }
     }).catch(console.error);
 
-    // 每30分钟刷新一次
+    // 每30分钟Refresh一次
     const interval = setInterval(() => {
       api.refreshAllTokens().then((refreshed) => {
         if (refreshed.length > 0) {
-          console.log(`[INFO] 定时自动刷新了 ${refreshed.length} 个 Token`);
+          console.log(`[INFO] 定时Auto Refresh了 ${refreshed.length} 个 Token`);
           loadAccounts();
         }
       }).catch(console.error);
@@ -137,19 +137,19 @@ function App() {
     return () => clearInterval(interval);
   }, [loadAccounts]);
 
-  // 添加账号
+  // Add Account
   const handleAddAccount = async (token: string, cookies?: string) => {
     await api.addAccountByToken(token, cookies);
-    addToast("success", "账号添加成功");
+    addToast("success", "AccountAddSuccess");
     await loadAccounts();
   };
 
-  // 删除账号
+  // 删除Account
   const handleDeleteAccount = async (accountId: string) => {
     setConfirmModal({
       isOpen: true,
-      title: "删除账号",
-      message: "确定要删除此账号吗？删除后无法恢复。",
+      title: "删除Account",
+      message: "OK要删除此Account吗？删除后无法恢复。",
       type: "danger",
       onConfirm: async () => {
         try {
@@ -159,19 +159,19 @@ function App() {
             next.delete(accountId);
             return next;
           });
-          addToast("success", "账号已删除");
+          addToast("success", "AccountDeleted");
           await loadAccounts();
         } catch (err: any) {
-          addToast("error", err.message || "删除账号失败");
+          addToast("error", err.message || "删除Account失败");
         }
         setConfirmModal(null);
       },
     });
   };
 
-  // 刷新单个账号
+  // Refresh单Accounts
   const handleRefreshAccount = async (accountId: string) => {
-    // 防止重复刷新
+    // 防止重复Refresh
     if (refreshingIds.has(accountId)) {
       return;
     }
@@ -183,9 +183,9 @@ function App() {
       setAccounts((prev) =>
         prev.map((a) => (a.id === accountId ? { ...a, usage } : a))
       );
-      addToast("success", "数据刷新成功");
+      addToast("success", "数据RefreshSuccess");
     } catch (err: any) {
-      addToast("error", err.message || "刷新失败");
+      addToast("error", err.message || "Refresh失败");
     } finally {
       setRefreshingIds((prev) => {
         const next = new Set(prev);
@@ -195,7 +195,7 @@ function App() {
     }
   };
 
-  // 选择账号
+  // 选择Account
   const handleSelectAccount = (accountId: string) => {
     setSelectedIds((prev) => {
       const next = new Set(prev);
@@ -208,7 +208,7 @@ function App() {
     });
   };
 
-  // 全选/取消全选
+  // Select All/None
   const handleSelectAll = () => {
     if (selectedIds.size === accounts.length) {
       setSelectedIds(new Set());
@@ -217,13 +217,13 @@ function App() {
     }
   };
 
-  // 右键菜单
+  // Context Menu
   const handleContextMenu = (e: React.MouseEvent, accountId: string) => {
     e.preventDefault();
     setContextMenu({ x: e.clientX, y: e.clientY, accountId });
   };
 
-  // 复制 Token
+  // Copy Token
   const handleCopyToken = async (accountId: string) => {
     try {
       const account = await api.getAccount(accountId);
@@ -231,66 +231,66 @@ function App() {
         await navigator.clipboard.writeText(account.jwt_token);
         addToast("success", "Token 已复制到剪贴板");
       } else {
-        addToast("warning", "该账号没有有效的 Token");
+        addToast("warning", "该Account没有有效的 Token");
       }
     } catch (err: any) {
       addToast("error", err.message || "获取 Token 失败");
     }
   };
 
-  // 切换账号
+  // 切换Account
   const handleSwitchAccount = async (accountId: string) => {
     const account = accounts.find((a) => a.id === accountId);
     if (!account) return;
 
     setConfirmModal({
       isOpen: true,
-      title: "切换账号",
-      message: `确定要切换到账号 "${account.email || account.name}" 吗？\n\n系统将自动关闭 Trae IDE 并切换登录信息。`,
+      title: "切换Account",
+      message: `OK要切换到Account "${account.email || account.name}" 吗？\n\n系统将自动Close Trae IDE 并切换登录信息。`,
       type: "warning",
       onConfirm: async () => {
         setConfirmModal(null);
-        addToast("info", "正在切换账号，请稍候...");
+        addToast("info", "正In切换Account，请稍候...");
         try {
           await api.switchAccount(accountId);
           await loadAccounts();
-          addToast("success", "账号切换成功，请重新打开 Trae IDE");
+          addToast("success", "Account切换Success，请重新Open Trae IDE");
         } catch (err: any) {
-          addToast("error", err.message || "切换账号失败");
+          addToast("error", err.message || "切换Account失败");
         }
       },
     });
   };
 
-  // 查看详情
+  // View Details
   const handleViewDetail = async (accountId: string) => {
     const account = accounts.find((a) => a.id === accountId);
     if (account) {
       try {
-        // 获取完整的账号信息（包含 token 和 cookies）
+        // Get full account details (token & cookies)
         const fullAccount = await api.getAccount(accountId);
         setDetailAccount({ ...account, ...fullAccount });
       } catch (err: any) {
-        addToast("error", "获取账号详情失败");
-        console.error("获取账号详情失败:", err);
+        addToast("error", "获取Account Details失败");
+        console.error("获取Account Details失败:", err);
       }
     }
   };
 
-  // 更新 Token
+  // Update Token
   const handleUpdateToken = async (accountId: string, token: string) => {
     try {
       const usage = await api.updateAccountToken(accountId, token);
       setAccounts((prev) =>
         prev.map((a) => (a.id === accountId ? { ...a, usage } : a))
       );
-      addToast("success", "Token 更新成功，数据已刷新");
+      addToast("success", "Token 更新Success，数据已Refresh");
     } catch (err: any) {
-      throw err; // 让弹窗显示错误
+      throw err; // 让弹窗显示Error
     }
   };
 
-  // 打开更新 Token 弹窗
+  // OpenUpdate Token 弹窗
   const handleOpenUpdateToken = (accountId: string) => {
     const account = accounts.find((a) => a.id === accountId);
     if (account) {
@@ -301,45 +301,45 @@ function App() {
     }
   };
 
-  // 获取礼包
+  // 获取Package
   const handleClaimGift = async (accountId: string) => {
     const account = accounts.find((a) => a.id === accountId);
     if (!account) return;
 
     setConfirmModal({
       isOpen: true,
-      title: "获取礼包",
-      message: `确定要为账号 "${account.email || account.name}" 领取周年礼包吗？\n\n领取后将自动刷新账号额度。`,
+      title: "获取Package",
+      message: `OK要为Account "${account.email || account.name}" 领取周年Package吗？\n\n领取后将Auto RefreshAccount额度。`,
       type: "info",
       onConfirm: async () => {
         setConfirmModal(null);
-        addToast("info", "正在领取礼包，请稍候...");
+        addToast("info", "正In领取Package，请稍候...");
         try {
           await api.claimGift(accountId);
-          // 刷新账号数据
+          // RefreshAccount数据
           await handleRefreshAccount(accountId);
-          addToast("success", "礼包领取成功！额度已更新");
+          addToast("success", "Package领取Success！额度已更新");
         } catch (err: any) {
-          addToast("error", err.message || "领取礼包失败");
+          addToast("error", err.message || "领取Package失败");
         }
       },
     });
   };
 
-  // 显示导出说明
+  // 显示Export说明
   const handleShowExportInfo = () => {
     if (accounts.length === 0) {
-      addToast("warning", "没有账号可以导出");
+      addToast("warning", "没有Account可以Export");
       return;
     }
 
     setInfoModal({
       isOpen: true,
-      title: "导出账号说明",
+      title: "ExportAccount说明",
       icon: "📤",
       sections: [
         {
-          title: "📄 导出格式",
+          title: "📄 Export格式",
           content: "JSON 文件 (.json)",
           type: "text"
         },
@@ -351,19 +351,19 @@ function App() {
         {
           title: "📋 文件内容",
           content: `<ul>
-<li>所有账号的完整信息</li>
+<li>所有Account的完整信息</li>
 <li>Token 和 Cookies 数据</li>
 <li>使用量统计信息</li>
-<li>账号创建和更新时间</li>
+<li>Account创建和更新时间</li>
 </ul>`,
           type: "list"
         },
         {
-          title: "✅ 导出后可以",
+          title: "✅ Export后可以",
           content: `<ul>
-<li>备份账号数据</li>
+<li>备份Account数据</li>
 <li>迁移到其他设备</li>
-<li>恢复误删的账号</li>
+<li>恢复误删的Account</li>
 <li>分享给其他设备使用</li>
 </ul>`,
           type: "list"
@@ -371,19 +371,19 @@ function App() {
         {
           title: "⚠️ 安全提示",
           content: `<ul>
-<li><strong>导出文件包含敏感信息</strong></li>
-<li><strong>请妥善保管导出的文件</strong></li>
+<li><strong>Export文件包含敏感信息</strong></li>
+<li><strong>请妥善保管Export的文件</strong></li>
 <li><strong>不要分享给他人</strong></li>
-<li>建议加密存储导出文件</li>
+<li>建议加密存储Export文件</li>
 </ul>`,
           type: "list"
         },
         {
-          content: `当前将导出 ${accounts.length} 个账号`,
+          content: `当前将Export ${accounts.length} Accounts`,
           type: "text"
         }
       ],
-      confirmText: "开始导出",
+      confirmText: "开始Export",
       onConfirm: () => {
         setInfoModal(null);
         handleExportAccounts();
@@ -391,7 +391,7 @@ function App() {
     });
   };
 
-  // 导出账号
+  // ExportAccount
   const handleExportAccounts = async () => {
     try {
       const data = await api.exportAccounts();
@@ -405,17 +405,17 @@ function App() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      addToast("success", `已导出 ${accounts.length} 个账号到下载文件夹：${fileName}`);
+      addToast("success", `已Export ${accounts.length} Accounts到下载文件夹：${fileName}`);
     } catch (err: any) {
-      addToast("error", err.message || "导出失败");
+      addToast("error", err.message || "Export失败");
     }
   };
 
-  // 显示导入说明
+  // 显示Import说明
   const handleShowImportInfo = () => {
     setInfoModal({
       isOpen: true,
-      title: "导入账号说明",
+      title: "ImportAccount说明",
       icon: "📥",
       sections: [
         {
@@ -428,37 +428,37 @@ function App() {
           content: `{
   "accounts": [
     {
-      "id": "账号ID",
-      "name": "用户名",
-      "email": "邮箱地址",
+      "id": "AccountID",
+      "name": "Username",
+      "email": "Email地址",
       "jwt_token": "Token字符串",
       "cookies": "Cookies字符串",
-      "plan_type": "套餐类型",
+      "plan_type": "Plan Type",
       "created_at": 时间戳,
       "is_active": true,
       ...
     }
   ],
-  "active_account_id": "当前活跃账号ID",
-  "current_account_id": "当前使用账号ID"
+  "active_account_id": "当前活跃AccountID",
+  "current_account_id": "当前使用AccountID"
 }`,
           type: "code"
         },
         {
-          title: "✅ 导入步骤",
+          title: "✅ Import步骤",
           content: `<ul>
-<li>确认后选择 JSON 文件</li>
+<li>Confirm后选择 JSON 文件</li>
 <li>系统自动验证格式</li>
-<li>导入所有有效账号</li>
+<li>Import所有有效Account</li>
 </ul>`,
           type: "list"
         },
         {
           title: "⚠️ 注意事项",
           content: `<ul>
-<li>仅支持本应用导出的格式</li>
-<li>导入会自动跳过重复账号</li>
-<li>建议定期备份账号数据</li>
+<li>仅支持本AppExport的格式</li>
+<li>Import会自动跳过重复Account</li>
+<li>建议定期备份Account数据</li>
 </ul>`,
           type: "list"
         }
@@ -471,7 +471,7 @@ function App() {
     });
   };
 
-  // 导入账号
+  // ImportAccount
   const handleImportAccounts = () => {
     const input = document.createElement("input");
     input.type = "file";
@@ -483,26 +483,26 @@ function App() {
       try {
         const text = await file.text();
         const count = await api.importAccounts(text);
-        addToast("success", `成功导入 ${count} 个账号`);
+        addToast("success", `SuccessImport ${count} Accounts`);
         await loadAccounts();
       } catch (err: any) {
-        addToast("error", err.message || "导入失败");
+        addToast("error", err.message || "Import失败");
       }
     };
     input.click();
   };
 
-  // 批量刷新选中账号（优化：并行处理，添加进度反馈）
+  // 批量Refresh选中Account（优化：并行处理，Add进度反馈）
   const handleBatchRefresh = async () => {
     if (selectedIds.size === 0) {
-      addToast("warning", "请先选择要刷新的账号");
+      addToast("warning", "请先选择要Refresh的Account");
       return;
     }
 
     const ids = Array.from(selectedIds);
-    addToast("info", `正在刷新 ${ids.length} 个账号...`);
+    addToast("info", `正InRefresh ${ids.length} Accounts...`);
 
-    // 并行刷新所有选中的账号
+    // 并行Refresh所有选中的Account
     const results = await Promise.allSettled(
       ids.map(async (id) => {
         try {
@@ -524,16 +524,16 @@ function App() {
     const failCount = ids.length - successCount;
 
     if (failCount === 0) {
-      addToast("success", `成功刷新 ${successCount} 个账号`);
+      addToast("success", `SuccessRefresh ${successCount} Accounts`);
     } else {
-      addToast("warning", `刷新完成：${successCount} 成功，${failCount} 失败`);
+      addToast("warning", `Refresh完成：${successCount} Success，${failCount} 失败`);
     }
   };
 
-  // 批量删除选中账号（优化：改进错误处理和反馈）
+  // 批量删除选中Account（优化：改进Error处理和反馈）
   const handleBatchDelete = () => {
     if (selectedIds.size === 0) {
-      addToast("warning", "请先选择要删除的账号");
+      addToast("warning", "请先选择要删除的Account");
       return;
     }
 
@@ -541,13 +541,13 @@ function App() {
     setConfirmModal({
       isOpen: true,
       title: "批量删除",
-      message: `确定要删除选中的 ${ids.length} 个账号吗？此操作无法撤销。`,
+      message: `OK要删除选中的 ${ids.length} Accounts吗？此操作无法撤销。`,
       type: "danger",
       onConfirm: async () => {
         setConfirmModal(null);
-        addToast("info", `正在删除 ${ids.length} 个账号...`);
+        addToast("info", `正In删除 ${ids.length} Accounts...`);
 
-        // 并行删除所有选中的账号
+        // 并行删除所有选中的Account
         const results = await Promise.allSettled(
           ids.map((id) => api.removeAccount(id))
         );
@@ -560,39 +560,39 @@ function App() {
         await loadAccounts();
 
         if (failCount === 0) {
-          addToast("success", `成功删除 ${successCount} 个账号`);
+          addToast("success", `Success删除 ${successCount} Accounts`);
         } else {
-          addToast("warning", `删除完成：${successCount} 成功，${failCount} 失败`);
+          addToast("warning", `删除完成：${successCount} Success，${failCount} 失败`);
         }
       },
     });
   };
 
-  // 删除过期/失效账号
+  // Delete Expired/Invalid
   const handleDeleteExpiredAccounts = () => {
-    // 筛选出过期或失效的账号
+    // 筛选出Expired或失效的Account
     const expiredAccounts = accounts.filter((account) => {
       if (!account.token_expired_at) return false;
       const expiry = new Date(account.token_expired_at).getTime();
       if (isNaN(expiry)) return false;
-      return expiry < Date.now(); // Token 已过期
+      return expiry < Date.now(); // Token Expired
     });
 
     if (expiredAccounts.length === 0) {
-      addToast("info", "没有找到过期或失效的账号");
+      addToast("info", "没有找到Expired或失效的Account");
       return;
     }
 
     setConfirmModal({
       isOpen: true,
-      title: "删除过期账号",
-      message: `检测到 ${expiredAccounts.length} 个过期账号，确定要删除吗？此操作无法撤销。`,
+      title: "删除ExpiredAccount",
+      message: `检测到 ${expiredAccounts.length} 个ExpiredAccount，OK要删除吗？此操作无法撤销。`,
       type: "warning",
       onConfirm: async () => {
         setConfirmModal(null);
-        addToast("info", `正在删除 ${expiredAccounts.length} 个过期账号...`);
+        addToast("info", `正In删除 ${expiredAccounts.length} 个ExpiredAccount...`);
 
-        // 并行删除所有过期账号
+        // 并行删除所有ExpiredAccount
         const results = await Promise.allSettled(
           expiredAccounts.map((account) => api.removeAccount(account.id))
         );
@@ -605,9 +605,9 @@ function App() {
         await loadAccounts();
 
         if (failCount === 0) {
-          addToast("success", `成功删除 ${successCount} 个过期账号`);
+          addToast("success", `Success删除 ${successCount} 个ExpiredAccount`);
         } else {
-          addToast("warning", `删除完成：${successCount} 成功，${failCount} 失败`);
+          addToast("warning", `删除完成：${successCount} Success，${failCount} 失败`);
         }
       },
     });
@@ -633,15 +633,15 @@ function App() {
           <>
             <header className="page-header">
               <div className="header-left">
-                <h2 className="page-title">账号管理</h2>
-                <p>管理您的账号</p>
+                <h2 className="page-title">Account Management</h2>
+                <p>管理您的Account</p>
               </div>
               <div className="header-right">
-                <span className="account-count">共 {accounts.length} 个账号</span>
+                <span className="account-count">共 {accounts.length} Accounts</span>
                 <button
                   className="header-btn danger"
                   onClick={handleDeleteExpiredAccounts}
-                  title="删除所有过期账号"
+                  title="删除所有ExpiredAccount"
                   disabled={accounts.length === 0}
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
@@ -649,7 +649,7 @@ function App() {
                     <line x1="10" y1="11" x2="10" y2="17"/>
                     <line x1="14" y1="11" x2="14" y2="17"/>
                   </svg>
-                  删除过期
+                  删除Expired
                   {(() => {
                     const expiredCount = accounts.filter((account) => {
                       if (!account.token_expired_at) return false;
@@ -660,20 +660,20 @@ function App() {
                     return expiredCount > 0 ? <span className="badge-count">{expiredCount}</span> : null;
                   })()}
                 </button>
-                <button className="header-btn" onClick={handleShowImportInfo} title="导入账号">
+                <button className="header-btn" onClick={handleShowImportInfo} title="ImportAccount">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
                   </svg>
-                  导入
+                  Import
                 </button>
-                <button className="header-btn" onClick={handleShowExportInfo} title="导出账号" disabled={accounts.length === 0}>
+                <button className="header-btn" onClick={handleShowExportInfo} title="ExportAccount" disabled={accounts.length === 0}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
                   </svg>
-                  导出
+                  Export
                 </button>
                 <button className="add-btn" onClick={() => setShowAddModal(true)}>
-                  <span>+</span> 添加账号
+                  <span>+</span> Add Account
                 </button>
               </div>
             </header>
@@ -696,7 +696,7 @@ function App() {
                           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
                             <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
                           </svg>
-                          刷新
+                          Refresh
                         </button>
                         <button className="batch-btn danger" onClick={handleBatchDelete}>
                           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
@@ -743,19 +743,19 @@ function App() {
               {loading ? (
                 <div className="loading">
                   <div className="spinner"></div>
-                  <p>加载中...</p>
+                  <p>Loading...</p>
                 </div>
               ) : accounts.length === 0 ? (
                 <div className="empty-state">
                   <div className="empty-icon">📋</div>
-                  <h3>暂无账号</h3>
-                  <p>点击上方按钮添加账号，或导入已有账号</p>
+                  <h3>No Accounts</h3>
+                  <p>点击上方按钮Add Account，或Import已有Account</p>
                   <div className="empty-actions">
                     <button className="empty-btn primary" onClick={() => setShowAddModal(true)}>
-                      添加账号
+                      Add Account
                     </button>
                     <button className="empty-btn" onClick={handleImportAccounts}>
-                      导入账号
+                      ImportAccount
                     </button>
                   </div>
                 </div>
@@ -777,10 +777,10 @@ function App() {
                   <div className="list-header">
                     <div className="list-col checkbox"></div>
                     <div className="list-col avatar"></div>
-                    <div className="list-col info">账号信息</div>
+                    <div className="list-col info">Account信息</div>
                     <div className="list-col plan">套餐</div>
                     <div className="list-col usage">使用量</div>
-                    <div className="list-col reset">重置时间</div>
+                    <div className="list-col reset">Reset Time</div>
                     <div className="list-col status">状态</div>
                     <div className="list-col actions"></div>
                   </div>
@@ -804,8 +804,8 @@ function App() {
           <>
             <header className="page-header">
               <div className="header-left">
-                <h2 className="page-title">设置</h2>
-                <p>配置应用程序选项</p>
+                <h2 className="page-title">Settings</h2>
+                <p>配置App程序选项</p>
               </div>
             </header>
             <Settings onToast={addToast} />
@@ -816,8 +816,8 @@ function App() {
           <>
             <header className="page-header">
               <div className="header-left">
-                <h2 className="page-title">关于</h2>
-                <p>应用程序信息</p>
+                <h2 className="page-title">About</h2>
+                <p>App程序信息</p>
               </div>
             </header>
             <About />
@@ -828,15 +828,15 @@ function App() {
       {/* Toast 通知 */}
       <Toast messages={toasts} onRemove={removeToast} />
 
-      {/* 确认弹窗 */}
+      {/* Confirm弹窗 */}
       {confirmModal && (
         <ConfirmModal
           isOpen={confirmModal.isOpen}
           title={confirmModal.title}
           message={confirmModal.message}
           type={confirmModal.type}
-          confirmText="确定"
-          cancelText="取消"
+          confirmText="OK"
+          cancelText="Cancel"
           onConfirm={confirmModal.onConfirm}
           onCancel={() => setConfirmModal(null)}
         />
@@ -855,7 +855,7 @@ function App() {
         />
       )}
 
-      {/* 右键菜单 */}
+      {/* Context Menu */}
       {contextMenu && (
         <ContextMenu
           x={contextMenu.x}
@@ -893,7 +893,7 @@ function App() {
         />
       )}
 
-      {/* 添加账号弹窗 */}
+      {/* Add Account弹窗 */}
       <AddAccountModal
         isOpen={showAddModal}
         onClose={() => setShowAddModal(false)}
@@ -910,7 +910,7 @@ function App() {
         usage={detailAccount?.usage || null}
       />
 
-      {/* 更新 Token 弹窗 */}
+      {/* Update Token 弹窗 */}
       <UpdateTokenModal
         isOpen={!!updateTokenModal}
         accountId={updateTokenModal?.accountId || ""}

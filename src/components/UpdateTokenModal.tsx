@@ -68,7 +68,7 @@ export function UpdateTokenModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputValue.trim()) {
-      setError("请输入新的 Token");
+      setError("Please enter new Token");
       return;
     }
 
@@ -79,7 +79,7 @@ export function UpdateTokenModal({
       const token = extractToken(inputValue);
 
       if (!token) {
-        setError("无法识别 Token，请确保输入正确的 Token 或 GetUserToken 接口响应");
+        setError("Unrecognized Token. Please provide a valid Token.");
         setLoading(false);
         return;
       }
@@ -88,7 +88,7 @@ export function UpdateTokenModal({
       setInputValue("");
       onClose();
     } catch (err: any) {
-      setError(err.message || "更新 Token 失败");
+      setError(err.message || "Update Token Failed");
     } finally {
       setLoading(false);
     }
@@ -103,25 +103,25 @@ export function UpdateTokenModal({
   return (
     <div className="modal-overlay" onClick={handleClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <h2>更新 Token</h2>
+        <h2>Update Token</h2>
 
         <p className="modal-desc">
-          为账号 <strong>{accountName}</strong> 更新 Token。
+          Update Token for account <strong>{accountName}</strong>.
           <br />
-          <small>请确保新 Token 属于同一个用户，否则更新会失败。</small>
+          <small>Make sure new Token belongs to the same user.</small>
         </p>
 
         <div className="token-help">
           <details>
             <summary>如何获取新 Token？</summary>
             <ol>
-              <li>打开 <a href="https://www.trae.ai/account-setting#usage" target="_blank" rel="noopener noreferrer">trae.ai 账号设置页面</a> 并登录对应账号</li>
-              <li>按 <kbd>F12</kbd> 打开开发者工具</li>
-              <li>切换到 <strong>Network</strong> 标签</li>
-              <li>刷新页面</li>
-   <li>在请求列表中找到 <code>GetUserToken</code></li>
-              <li>点击该请求，在右侧找到 <strong>Response</strong> 标签</li>
-              <li>复制整个响应内容，粘贴到下方</li>
+              <li>Open <a href="https://www.trae.ai/account-setting#usage" target="_blank" rel="noopener noreferrer">trae.ai Settings页面</a> and Login对应Account</li>
+              <li>按 <kbd>F12</kbd> Open Developer Tools</li>
+              <li>切换到 <strong>Network</strong> tab</li>
+              <li>Refresh page</li>
+   <li>Find in request list <code>GetUserToken</code></li>
+              <li>Click the request, on the right find <strong>Response</strong> tab</li>
+              <li>Copy the response body and paste below</li>
             </ol>
           </details>
         </div>
@@ -130,7 +130,7 @@ export function UpdateTokenModal({
           <textarea
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder='粘贴新的 Token 或 API 响应...'
+            placeholder='Paste new Token or API response...'
             rows={8}
             disabled={loading}
           />
@@ -139,10 +139,10 @@ export function UpdateTokenModal({
 
           <div className="modal-actions">
             <button type="button" onClick={handleClose} disabled={loading}>
-              取消
+              Cancel
             </button>
             <button type="submit" className="primary" disabled={loading}>
-              {loading ? "更新中..." : "更新 Token"}
+              {loading ? "Updating..." : "Update Token"}
             </button>
           </div>
         </form>

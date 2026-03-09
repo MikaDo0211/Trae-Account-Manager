@@ -17,7 +17,7 @@ export function InfoModal({
   title,
   icon = "ℹ️",
   sections,
-  confirmText = "确定",
+  confirmText = "OK",
   onConfirm,
   onCancel,
 }: InfoModalProps) {
@@ -56,7 +56,7 @@ export function InfoModal({
 
         <div className="info-modal-footer">
           <button className="info-btn cancel" onClick={onCancel}>
-            取消
+            Cancel
           </button>
           <button className="info-btn confirm" onClick={onConfirm}>
             {confirmText}
